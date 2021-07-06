@@ -1,0 +1,112 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
+from instagrapi import Client
+import os
+
+
+# In[ ]: download all the pic from public instagram account
+
+
+# instaloader account-name      
+
+
+# In[2]: the path of the downloaded post
+
+
+all_files = os.listdir("C:/Users/********") #your path
+
+
+# In[3]: get a list of the comments
+
+
+txt_files = list(filter(lambda x: x[-4:] == '.txt', all_files))
+txt_files.sort()
+
+
+# In[5]: get a list of the pictures
+
+
+jpg_files = list(filter(lambda x: x[-4:] == '.jpg', all_files))
+jpg_files.sort()
+
+
+# In[8]: initialize array
+
+
+jpg_array = []
+jpg_path = []
+txt_path = []
+
+
+# In[9]: create all the path for the comment and pictures
+
+
+for i in range(len(txt_files)):
+    txt_path.append("C:/Users/********" + txt_files[i]) # add your path
+    jpg_path.append("C:/Users/********" + txt_files[i][:-3] + "jpg") # add your path
+    jpg_array.append(txt_files[i][:-3] + "jpg")
+
+
+# In[10]: create a dictionary where the key is the name of the file/post and the items are the path of all pictures that match the key
+
+
+myKey = list(range(0,32))
+myDict = data = {k: [] for k in jpg_array}
+
+
+# In[11]: add items to the dictionary
+
+
+# length of file name: 27
+i = 0
+for key in myDict:
+    for j in jpg_files:
+        if(key[0:23] == j[0:23]):
+            myDict[key].append("C:/Users/********" + j) #your path
+
+
+# In[12]: initialize the client
+
+
+bot = Client()
+
+Username = "*********" #your username
+Password = "*********" #your password 
+
+bot.login(Username, Password) #log into instagram
+
+
+# In[48]: loop throught the dictionary to publish all the post
+
+
+for i in range(0, len(myDict)):
+    if len(myDict[jpg_array[i]]) == 1: #if the key only has one path (one picture) then the path must be a string
+        photo_path = myDict[jpg_array[i]]
+        pathToString = ''.join(photo_path)
+
+        text = open(txt_path[i], encoding="utf8")
+        textString = text.read().replace("\n", " ")
+        text.close()
+
+        bot.photo_upload(
+            pathToString,
+            caption = textString
+        )
+    else: #if the key has multiple path, it's expecting a list so we dont need to do anything
+        album_path = myDict[jpg_array[i]]
+
+        text = open(txt_path[i], encoding="utf8")
+        textString = text.read().replace("\n", " ")
+        text.close()
+
+        bot.album_upload( #publish the post with the picture(s) and the description
+            album_path,
+            caption = textString
+        )
+
+
+#
